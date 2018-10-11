@@ -1,0 +1,10 @@
+add_subdirectory(gui)
+
+set(HEADER_FILES ${HEADER_FILES}
+  ${CMAKE_CURRENT_SOURCE_DIR}/editorState.hpp
+  PARENT_SCOPE)
+
+set(SOURCE_FILES ${SOURCE_FILES}
+  ${CMAKE_CURRENT_SOURCE_DIR}/editorState.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+  PARENT_SCOPE)
