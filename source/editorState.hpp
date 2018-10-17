@@ -3,7 +3,17 @@
 #include <aw/engine/runtime/state.hpp>
 #include <aw/engine/window.hpp>
 
+#include <aw/graphics/3d/orbitCameraController.hpp>
+#include <aw/graphics/core/camera.hpp>
+#include <aw/graphics/core/shaderProgram.hpp>
+
+#include <aw/runtime/renderers/meshRenderer.hpp>
+#include <aw/runtime/scene/scene.hpp>
+
 #include "gui/gui.hpp"
+#include "managers/cameraManager.hpp"
+#include "managers/collisionCubeManager.hpp"
+#include "managers/meshManager.hpp"
 
 namespace aw
 {
@@ -26,4 +36,14 @@ private:
   unsigned mListenerId;
 
   GUI mGUI;
+  MeshManager mMeshManager;
+  CollisionCubeManager mCollisionCubeManager;
+
+  aw::ShaderProgram mMeshShader;
+
+  aw::Camera mCamera;
+  CameraManager mCamController;
+
+  aw::Scene mScene;
+  aw::MeshRenderer mMeshRenderer;
 };

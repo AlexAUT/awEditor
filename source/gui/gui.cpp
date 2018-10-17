@@ -1,19 +1,22 @@
 #include "gui.hpp"
 
 #include "setup/menuBar.hpp"
+#include "setup/modals.hpp"
 
 #include <aw/gui/style/defaultStyles.hpp>
 #include <aw/gui/widgets/linearContainer.hpp>
 
-GUI::GUI(aw::Vec2 screenSize) : mGUI(screenSize)
+GUI::GUI(aw::Vec2 screenSize, aw::MessageBus& bus) : mGUI(screenSize), mMsgBus(bus)
 {
   applyDefaultStyles(mGUI);
 
   auto screen = mGUI.addScreen();
   using namespace aw::gui;
   auto container = std::make_shared<LinearContainer>(mGUI, Orientation::Vertical);
-  setupMenuBar(container);
+  setupMenuBar(mMsgBus, container);
   screen->setChild(container);
+
+  setupModals(mMsgBus);
 }
 
 void GUI::update(float delta)

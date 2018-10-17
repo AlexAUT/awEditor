@@ -1,0 +1,17 @@
+{
+	"antialiasing" : 0,
+	"applicationName" : "Aw Engine",
+	"bitsPerPixel" : 32,
+	"coreContext" : true,
+	"cursorVisible" : true,
+	"debugContext" : false,
+	"depthBits" : 16,
+	"frameLimit" : 0,
+	"grabCursor" : false,
+	"openglMajor" : 4,
+	"openglMinor" : 3,
+	"resolutionX" : 1280,
+	"resolutionY" : 720,
+	"stencilBits" : 8,
+	"vsync" : true
+}
