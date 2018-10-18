@@ -33,7 +33,7 @@ EditorState::EditorState(aw::Engine& engine)
   assert(vShader && fShader);
   mMeshShader.link(*vShader, *fShader);
 
-  NewMeshEvent event{"/home/alex/Documents/git/flightGame/assets/meshes/airplane1.fbx"};
+  NewMeshEvent event{"/tmp/git/flightgame/assets/meshes/airplane1.fbx"};
   engine.getMessageBus().broadcast<MeshEvent>(event);
 }
 
