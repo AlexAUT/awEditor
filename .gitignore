@@ -1,4 +1,7 @@
+*.trace
+log.txt
 **/samples/
+.ycm_extra_conf.py
 build/
 
 # Prerequisites
