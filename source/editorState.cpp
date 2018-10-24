@@ -3,6 +3,7 @@
 #include <aw/engine/engine.hpp>
 #include <aw/engine/window.hpp>
 #include <aw/graphics/core/shaderStage.hpp>
+#include <aw/opengl/opengl.hpp>
 #include <aw/utils/colors.hpp>
 
 #include <aw/gui/style/defaultStyles.hpp>
@@ -15,25 +16,26 @@ DEFINE_LOG_CATEGORY(EditorD, aw::log::Debug, "Editor")
 #include <aw/utils/math/constants.hpp>
 using namespace aw::constantsF;
 
+#include <utility>
+
 aw::gui::Widget::SPtr window;
 
 EditorState::EditorState(aw::Engine& engine)
     : aw::State(engine.getStateMachine()), mEngine(engine), mGUI(engine.getWindow().getSize(), engine.getMessageBus()),
-      mMeshManager(engine.getMessageBus(), mScene),
+      mMeshManager(engine.getMessageBus(), mScene), mCollisionCubeManager(engine.getMessageBus()),
       mCamera(aw::Camera::createPerspective(engine.getWindow().getAspectRatio(), 60.f * TO_RAD, 0.1f, 200.f)),
-      mCamController(&mCamera)
+      mCamController(&mCamera), mColMeshRenderer(mCollisionCubeManager)
 {
   mListenerId = mEngine.getWindow().registerEventListener([this](auto e) { this->processEvent(e); });
-  mEngine.getWindow().setClearColor(aw::Colors::DARKRED);
+  mEngine.getWindow().setClearColor(aw::Colors::DIMSLATEGREY);
 
   LogTemp() << engine.getWindow().getAspectRatio();
 
   auto vShader = aw::ShaderStage::loadFromAssetFile(aw::ShaderStage::Vertex, "shaders/simple.vert");
   auto fShader = aw::ShaderStage::loadFromAssetFile(aw::ShaderStage::Fragment, "shaders/mesh.frag");
-  assert(vShader && fShader);
   mMeshShader.link(*vShader, *fShader);
 
-  NewMeshEvent event{"/tmp/git/flightgame/assets/meshes/airplane1.fbx"};
+  NewMeshEvent event{"/home/alex/Documents/git/flightGame/assets/meshes/airplane1.fbx"};
   engine.getMessageBus().broadcast<MeshEvent>(event);
 }
 
@@ -57,6 +59,7 @@ void EditorState::render()
 
   mCamera.setAspectRatio(mEngine.getWindow().getAspectRatio());
   mMeshRenderer.renderForwardPass(mCamera, mMeshShader);
+  mColMeshRenderer.render(mCamera);
 
   mGUI.render();
 }

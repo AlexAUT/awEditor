@@ -8,12 +8,14 @@
 #include <aw/graphics/core/shaderProgram.hpp>
 
 #include <aw/runtime/renderers/meshRenderer.hpp>
+#include <aw/runtime/renderers/primitiveRenderer.hpp>
 #include <aw/runtime/scene/scene.hpp>
 
 #include "gui/gui.hpp"
 #include "managers/cameraManager.hpp"
 #include "managers/collisionCubeManager.hpp"
 #include "managers/meshManager.hpp"
+#include "renderers/collisionCubesRenderer.hpp"
 
 namespace aw
 {
@@ -46,4 +48,6 @@ private:
 
   aw::Scene mScene;
   aw::MeshRenderer mMeshRenderer;
+
+  CollisionCubesRenderer mColMeshRenderer;
 };

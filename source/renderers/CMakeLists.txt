@@ -1,0 +1,7 @@
+set(HEADER_FILES ${HEADER_FILES}
+  ${CMAKE_CURRENT_SOURCE_DIR}/collisionCubesRenderer.hpp
+  PARENT_SCOPE)
+
+set(SOURCE_FILES ${SOURCE_FILES}
+  ${CMAKE_CURRENT_SOURCE_DIR}/collisionCubesRenderer.cpp
+  PARENT_SCOPE)

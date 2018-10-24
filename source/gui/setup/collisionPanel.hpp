@@ -1,5 +1,8 @@
 #pragma once
 
+#include "../../events/collisionMeshEvent.hpp"
+#include "../guiEvent.hpp"
+
 #include <aw/gui/gui.hpp>
 #include <aw/gui/widgets/widgets.hpp>
 #include <aw/utils/messageBus/messageBus.hpp>
@@ -15,7 +18,7 @@ void addVector3(aw::gui::LinearContainer::SPtr& container, std::string title)
 
   auto label = std::make_shared<Label>(gui, std::move(title));
   label->setAlignmentH(AlignmentH::Center);
-  label->setPadding({5.f, 0.f, 2.f, 0.f});
+  label->setPadding({5.f, 0.f, 3.f, 0.f});
   container->addChild(label, 0);
 
   auto subContainer = std::make_shared<LinearContainer>(gui, Orientation::Horizontal);
@@ -30,7 +33,7 @@ void addVector3(aw::gui::LinearContainer::SPtr& container, std::string title)
 }
 } // namespace priv
 
-void setupCollisionPanel(const aw::MessageBus& messageBus, aw::gui::LinearContainer::SPtr& container)
+void setupCollisionPanel(aw::MessageBus& messageBus, aw::gui::LinearContainer::SPtr& container)
 {
   using namespace aw::gui;
   auto& gui = container->getGUI();
@@ -40,10 +43,21 @@ void setupCollisionPanel(const aw::MessageBus& messageBus, aw::gui::LinearContai
   auto layout = std::make_shared<aw::gui::LinearContainer>(gui, aw::gui::Orientation::Vertical);
   panel->setChild(layout);
 
-  auto addBtn = std::make_shared<aw::gui::Button>(gui, "Add rect");
-  layout->addChild(addBtn, 0);
-
   priv::addVector3(layout, "Position");
   priv::addVector3(layout, "Scale");
   priv::addVector3(layout, "Rotation");
+
+  auto addBtn = std::make_shared<aw::gui::Button>(gui, "Add rect");
+  addBtn->onClick = [&](auto) { messageBus.broadcast<ColMeshEvent>(NewColMeshEvent()); };
+  layout->addChild(addBtn, 0);
+
+  auto cubeList = std::make_shared<List>(gui);
+  layout->addChild(cubeList);
+
+  messageBus.subscribeToChannelUnsafe<ColMeshEvent>([cubeList](const ColMeshEvent& event) {
+    if (event.type == ColMeshEventType::New)
+    {
+      cubeList->addItem("Cube1", "1");
+    }
+  });
 }
