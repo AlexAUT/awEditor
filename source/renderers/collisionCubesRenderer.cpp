@@ -4,16 +4,17 @@
 
 #include <aw/graphics/core/camera.hpp>
 #include <aw/graphics/core/geometry.hpp>
-
 #include <aw/opengl/opengl.hpp>
+#include <aw/utils/file/path.hpp>
 
 CollisionCubesRenderer::CollisionCubesRenderer(const CollisionCubeManager& manager)
     : mCubeManager(manager), mSurfaceRenderer(PrimitiveRenderer::PrimitiveType::Triangles),
       mOutlinesRenderer(PrimitiveRenderer::PrimitiveType::Lines),
       mPointRenderer(PrimitiveRenderer::PrimitiveType::Points)
 {
-  mSurfaceShader.link(*aw::ShaderStage::loadFromAssetFile(aw::ShaderStage::Vertex, "shaders/primitive.vert"),
-                      *aw::ShaderStage::loadFromAssetFile(aw::ShaderStage::Fragment, "shaders/color.vert"));
+  mSurfaceShader.link(
+      *aw::ShaderStage::loadFromPath(aw::ShaderStage::Vertex, aw::createAssetPath("shaders/primitive.vert")),
+      *aw::ShaderStage::loadFromPath(aw::ShaderStage::Fragment, aw::createAssetPath("shaders/color.vert")));
 }
 
 void CollisionCubesRenderer::render(const aw::Camera& camera)

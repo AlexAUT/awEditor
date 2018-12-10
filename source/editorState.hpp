@@ -7,14 +7,14 @@
 #include <aw/graphics/core/camera.hpp>
 #include <aw/graphics/core/shaderProgram.hpp>
 
-#include <aw/runtime/renderers/meshRenderer.hpp>
 #include <aw/runtime/renderers/primitiveRenderer.hpp>
 #include <aw/runtime/scene/scene.hpp>
+#include <aw/runtime/systems/meshRendererSystem.hpp>
 
 #include "gui/gui.hpp"
 #include "managers/cameraManager.hpp"
 #include "managers/collisionCubeManager.hpp"
-#include "managers/meshManager.hpp"
+#include "managers/meshPreviewHandler.hpp"
 #include "renderers/collisionCubesRenderer.hpp"
 
 namespace aw
@@ -37,8 +37,10 @@ private:
   aw::Engine& mEngine;
   unsigned mListenerId;
 
+  aw::Scene mScene;
+
   GUI mGUI;
-  MeshManager mMeshManager;
+  MeshPreviewHandler mMeshHandler;
   CollisionCubeManager mCollisionCubeManager;
 
   aw::ShaderProgram mMeshShader;
@@ -46,8 +48,7 @@ private:
   aw::Camera mCamera;
   CameraManager mCamController;
 
-  aw::Scene mScene;
-  aw::MeshRenderer mMeshRenderer;
+  aw::ecs::systems::MeshRendererSystem mMeshRendererSystem;
 
   CollisionCubesRenderer mColMeshRenderer;
 };

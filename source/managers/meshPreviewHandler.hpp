@@ -1,19 +1,16 @@
 #pragma once
 
 #include <aw/graphics/3d/mesh.hpp>
-
+#include <aw/runtime/entitySystem/entity.hpp>
 #include <aw/runtime/scene/scene.hpp>
-
 #include <aw/utils/messageBus/messageBus.hpp>
 
 #include "../events/meshEvent.hpp"
 
-class MeshManager
+class MeshPreviewHandler
 {
 public:
-  MeshManager(aw::MessageBus& bus, aw::Scene& scene);
-
-  aw::Mesh* getMesh() const { return mMesh.get(); }
+  MeshPreviewHandler(aw::MessageBus& bus, aw::Scene& scene);
 
 private:
   void processEvent(const MeshEvent& event);
@@ -24,6 +21,5 @@ private:
   aw::Channel<MeshEvent>::SubscriptionType mSubscription;
 
   aw::Scene& mScene;
-
-  std::unique_ptr<aw::Mesh> mMesh;
+  aw::ecs::Entity mEntity;
 };

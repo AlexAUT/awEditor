@@ -14,6 +14,8 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${TEST_FILES})
 #dependencies
 
 add_subdirectory(dependencies/awRevolt)
+
+set(OpenGL_GL_PREFERENCE "GLVND")
 find_package(OpenGL)
 
-target_link_libraries(${PROJECT_NAME} awEngine awGUI ${OPENGL_gl_LIBRARY})
+target_link_libraries(${PROJECT_NAME} awEngine awGUI OpenGL::GL)

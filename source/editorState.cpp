@@ -3,14 +3,14 @@
 #include <aw/engine/engine.hpp>
 #include <aw/engine/window.hpp>
 #include <aw/graphics/core/shaderStage.hpp>
-#include <aw/opengl/opengl.hpp>
-#include <aw/utils/colors.hpp>
-
 #include <aw/gui/style/defaultStyles.hpp>
 #include <aw/gui/widgets/widgets.hpp>
-
+#include <aw/opengl/opengl.hpp>
+#include <aw/utils/colors.hpp>
 #include <aw/utils/file/fileDialog.hpp>
+#include <aw/utils/file/path.hpp>
 #include <aw/utils/log.hpp>
+
 DEFINE_LOG_CATEGORY(EditorD, aw::log::Debug, "Editor")
 
 #include <aw/utils/math/constants.hpp>
@@ -22,20 +22,18 @@ aw::gui::Widget::SPtr window;
 
 EditorState::EditorState(aw::Engine& engine)
     : aw::State(engine.getStateMachine()), mEngine(engine), mGUI(engine.getWindow().getSize(), engine.getMessageBus()),
-      mMeshManager(engine.getMessageBus(), mScene), mCollisionCubeManager(engine.getMessageBus()),
+      mMeshHandler(engine.getMessageBus(), mScene), mCollisionCubeManager(engine.getMessageBus()),
       mCamera(aw::Camera::createPerspective(engine.getWindow().getAspectRatio(), 60.f * TO_RAD, 0.1f, 200.f)),
-      mCamController(&mCamera), mColMeshRenderer(mCollisionCubeManager)
+      mCamController(&mCamera), mMeshRendererSystem(mScene.getEntitySystem()), mColMeshRenderer(mCollisionCubeManager)
 {
   mListenerId = mEngine.getWindow().registerEventListener([this](auto e) { this->processEvent(e); });
   mEngine.getWindow().setClearColor(aw::Colors::DIMSLATEGREY);
 
-  LogTemp() << engine.getWindow().getAspectRatio();
-
-  auto vShader = aw::ShaderStage::loadFromAssetFile(aw::ShaderStage::Vertex, "shaders/simple.vert");
-  auto fShader = aw::ShaderStage::loadFromAssetFile(aw::ShaderStage::Fragment, "shaders/mesh.frag");
+  auto vShader = aw::ShaderStage::loadFromPath(aw::ShaderStage::Vertex, aw::createAssetPath("shaders/simple.vert"));
+  auto fShader = aw::ShaderStage::loadFromPath(aw::ShaderStage::Fragment, aw::createAssetPath("shaders/mesh.frag"));
   mMeshShader.link(*vShader, *fShader);
 
-  NewMeshEvent event{"/home/alex/Documents/git/flightGame/assets/meshes/airplane1.fbx"};
+  NewMeshEvent event{"/home/alex/Documents/git/flightgame/assets/meshes/airplane1.fbx"};
   engine.getMessageBus().broadcast<MeshEvent>(event);
 }
 
@@ -50,7 +48,7 @@ void EditorState::update(float delta)
 
   mCamController.update(delta);
 
-  mMeshRenderer.analyzeScene(mScene);
+  mMeshRendererSystem.update(0);
 }
 
 void EditorState::render()
@@ -58,7 +56,8 @@ void EditorState::render()
   mEngine.getWindow().clear();
 
   mCamera.setAspectRatio(mEngine.getWindow().getAspectRatio());
-  mMeshRenderer.renderForwardPass(mCamera, mMeshShader);
+
+  mMeshRendererSystem.render(mCamera);
   mColMeshRenderer.render(mCamera);
 
   mGUI.render();

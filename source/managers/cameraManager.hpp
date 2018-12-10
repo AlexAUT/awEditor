@@ -25,5 +25,5 @@ private:
 
   float mRotateSensibility{3.14f / 640.f};
   float mZoomSensibility{0.1f};
-  int mZoomState{20};
+  int mZoomState{60};
 };
