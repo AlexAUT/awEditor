@@ -15,7 +15,7 @@
 #include "managers/cameraManager.hpp"
 #include "managers/collisionCubeManager.hpp"
 #include "managers/meshPreviewHandler.hpp"
-#include "renderers/collisionCubesRenderer.hpp"
+#include "systems/collisionCubeRenderSystem.hpp"
 
 namespace aw
 {
@@ -49,6 +49,5 @@ private:
   CameraManager mCamController;
 
   aw::ecs::systems::MeshRendererSystem mMeshRendererSystem;
-
-  CollisionCubesRenderer mColMeshRenderer;
+  CollisionCubeRenderSystem mCollisionCubeRenderSystem;
 };

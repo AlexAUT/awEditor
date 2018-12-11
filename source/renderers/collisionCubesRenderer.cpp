@@ -49,7 +49,7 @@ void CollisionCubesRenderer::updateCache()
 {
   mCacheVersion = mCubeManager.getVersion();
 
-  auto count = mCubeManager.getRectCount();
+  auto count = mCubeManager.getCubeCount();
 
   mSurfaceRenderer.clear();
   mOutlinesRenderer.clear();

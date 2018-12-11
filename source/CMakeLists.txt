@@ -1,7 +1,7 @@
 add_subdirectory(events)
 add_subdirectory(gui)
 add_subdirectory(managers)
-add_subdirectory(renderers)
+add_subdirectory(systems)
 
 set(HEADER_FILES ${HEADER_FILES}
   ${CMAKE_CURRENT_SOURCE_DIR}/editorState.hpp

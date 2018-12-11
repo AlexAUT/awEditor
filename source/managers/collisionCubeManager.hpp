@@ -2,27 +2,34 @@
 
 #include <vector>
 
+#include <aw/runtime/entitySystem/entity.hpp>
+#include <aw/utils/messageBus/messageBus.hpp>
 #include <aw/utils/spatial/AABB.hpp>
 
-#include <aw/utils/messageBus/messageBus.hpp>
-
 #include "../events/collisionMeshEvent.hpp"
+
+namespace aw
+{
+class Scene;
+}
 
 class CollisionCubeManager
 {
 public:
-  using RectContainer = std::vector<aw::AABB>;
+  using CubeContainer = std::vector<aw::ecs::Entity>;
 
 public:
-  CollisionCubeManager(aw::MessageBus& bus);
+  CollisionCubeManager(aw::Scene& scene, aw::MessageBus& bus);
 
-  void addRect(aw::AABB rect);
-  void changeRect(size_t index, aw::AABB rect);
+  void addCube();
+  void changeCube(size_t index, aw::AABB cube);
 
-  size_t getRectCount() const { return mCollisionRects.size(); }
+  size_t getCubeCount() const { return mCollisionRects.size(); }
 
-  RectContainer::const_iterator begin() const { return mCollisionRects.cbegin(); }
-  RectContainer::const_iterator end() const { return mCollisionRects.cend(); };
+  aw::ecs::Entity getCubeById(std::string_view id) const;
+
+  CubeContainer::const_iterator begin() const { return mCollisionRects.cbegin(); }
+  CubeContainer::const_iterator end() const { return mCollisionRects.cend(); };
 
   int getVersion() const { return mVersion; }
 
@@ -30,9 +37,14 @@ private:
   void handleEvent(const ColMeshEvent& event);
 
 private:
-  RectContainer mCollisionRects;
+  aw::Scene& mScene;
+  aw::MessageBus& mMsgBus;
+
+  CubeContainer mCollisionRects;
 
   aw::Channel<ColMeshEvent>::SubscriptionType mSubscription;
 
   int mVersion{0};
+
+  int mCubeIdCounter{0};
 };

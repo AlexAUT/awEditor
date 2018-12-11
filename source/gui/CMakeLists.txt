@@ -1,3 +1,4 @@
+add_subdirectory(modules)
 add_subdirectory(setup)
 
 set(HEADER_FILES ${HEADER_FILES}

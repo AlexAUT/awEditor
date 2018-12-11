@@ -1,31 +1,68 @@
 #include "collisionCubeManager.hpp"
 
+#include "../components/collisionCube.hpp"
+#include "../components/collisionCubeId.hpp"
+
+#include <aw/runtime/entitySystem/entitySystem.hpp>
+#include <aw/runtime/entitySystem/unpackComponents.hpp>
+#include <aw/runtime/scene/scene.hpp>
 #include <aw/utils/log.hpp>
 
 #include <cassert>
 
-CollisionCubeManager::CollisionCubeManager(aw::MessageBus& bus)
-    : mSubscription(bus.subscribeToChannel<ColMeshEvent>([this](const auto& e) { handleEvent(e); }))
+CollisionCubeManager::CollisionCubeManager(aw::Scene& scene, aw::MessageBus& bus)
+    : mScene{scene}, mMsgBus{bus},
+      mSubscription(bus.subscribeToChannel<ColMeshEvent>([this](const auto& e) { handleEvent(e); }))
 {
 }
 
-void CollisionCubeManager::addRect(aw::AABB rect)
+void CollisionCubeManager::addCube()
 {
-  mCollisionRects.push_back(rect);
+
+  std::string id{std::to_string(++mCubeIdCounter)};
+  mCollisionRects.emplace_back(mScene.getEntitySystem().createEntity());
+  mCollisionRects.back().add<CollisionCube>(aw::AABB(1.f));
+  mCollisionRects.back().add<CollisionCubeId>(id);
   mVersion++;
+
+  CreatedColMeshEvent event{id, mCollisionRects.back()};
+  mMsgBus.broadcast<ColMeshEvent>(event);
 }
 
-void CollisionCubeManager::changeRect(size_t index, aw::AABB rect)
+void CollisionCubeManager::changeCube(size_t index, aw::AABB cube)
 {
   assert(index < mCollisionRects.size());
-  mCollisionRects[index] = rect;
+  assert(mCollisionRects[index].has<CollisionCube>());
+  mCollisionRects[index].get<CollisionCube>()->aabb = cube;
   mVersion++;
+}
+
+aw::ecs::Entity CollisionCubeManager::getCubeById(std::string_view id) const
+{
+  for (auto [entityId, cubeId] : mScene.getEntitySystem().getView<CollisionCubeId>())
+  {
+    if (cubeId->id == id)
+    {
+      return mScene.getEntitySystem().getEntity(entityId);
+    }
+  }
+  return {};
 }
 
 void CollisionCubeManager::handleEvent(const ColMeshEvent& event)
 {
   if (event.type == ColMeshEventType::New)
   {
-    addRect(aw::AABB(aw::Vec3(1.f)));
+    addCube();
+  }
+  if (event.type == ColMeshEventType::Select)
+  {
+    auto& e = static_cast<const SelectColMeshEvent&>(event);
+    auto entity = getCubeById(e.id);
+    if (entity)
+    {
+      SelectedColMeshEvent newEvent{entity};
+      mMsgBus.broadcast<ColMeshEvent>(newEvent);
+    }
   }
 }

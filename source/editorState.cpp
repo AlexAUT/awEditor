@@ -22,9 +22,10 @@ aw::gui::Widget::SPtr window;
 
 EditorState::EditorState(aw::Engine& engine)
     : aw::State(engine.getStateMachine()), mEngine(engine), mGUI(engine.getWindow().getSize(), engine.getMessageBus()),
-      mMeshHandler(engine.getMessageBus(), mScene), mCollisionCubeManager(engine.getMessageBus()),
+      mMeshHandler(engine.getMessageBus(), mScene), mCollisionCubeManager(mScene, engine.getMessageBus()),
       mCamera(aw::Camera::createPerspective(engine.getWindow().getAspectRatio(), 60.f * TO_RAD, 0.1f, 200.f)),
-      mCamController(&mCamera), mMeshRendererSystem(mScene.getEntitySystem()), mColMeshRenderer(mCollisionCubeManager)
+      mCamController(&mCamera), mMeshRendererSystem(mScene.getEntitySystem()),
+      mCollisionCubeRenderSystem(mScene.getEntitySystem())
 {
   mListenerId = mEngine.getWindow().registerEventListener([this](auto e) { this->processEvent(e); });
   mEngine.getWindow().setClearColor(aw::Colors::DIMSLATEGREY);
@@ -49,6 +50,7 @@ void EditorState::update(float delta)
   mCamController.update(delta);
 
   mMeshRendererSystem.update(0);
+  mCollisionCubeRenderSystem.update(0);
 }
 
 void EditorState::render()
@@ -58,7 +60,7 @@ void EditorState::render()
   mCamera.setAspectRatio(mEngine.getWindow().getAspectRatio());
 
   mMeshRendererSystem.render(mCamera);
-  mColMeshRenderer.render(mCamera);
+  mCollisionCubeRenderSystem.render(mCamera);
 
   mGUI.render();
 }
