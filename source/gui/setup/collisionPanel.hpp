@@ -47,9 +47,10 @@ void setupCollisionPanel(aw::MessageBus& messageBus, aw::gui::LinearContainer::S
   auto layout = std::make_shared<aw::gui::LinearContainer>(gui, aw::gui::Orientation::Vertical);
   tranformPanel->setChild(layout);
 
-  PropertiesPanel cubePanel(gui);
+  static PropertiesPanel cubePanel(gui, messageBus, "CollisionTab");
   cubePanel.addGroup("Transform");
 
+  cubePanel.addProperty("Z-Order", 1);
   cubePanel.addProperty("Position", aw::Vec3{0.f});
   cubePanel.addProperty("Scale", aw::Vec3{0.f});
   cubePanel.addProperty("Rotation", aw::Vec3{0.f});

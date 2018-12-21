@@ -7,6 +7,7 @@
 #include <aw/utils/spatial/AABB.hpp>
 
 #include "../events/collisionMeshEvent.hpp"
+#include "../gui/modules/propertiesPanelEvents.hpp"
 
 namespace aw
 {
@@ -35,6 +36,7 @@ public:
 
 private:
   void handleEvent(const ColMeshEvent& event);
+  void handlePropertyChangeEvent(const PropertyChangedEventBase& event);
 
 private:
   aw::Scene& mScene;
@@ -43,6 +45,7 @@ private:
   CubeContainer mCollisionRects;
 
   aw::Channel<ColMeshEvent>::SubscriptionType mSubscription;
+  aw::Channel<PropertyChangedEventBase>::SubscriptionType mSubProperties;
 
   int mVersion{0};
 

@@ -10,9 +10,12 @@
 
 #include <cassert>
 
-CollisionCubeManager::CollisionCubeManager(aw::Scene& scene, aw::MessageBus& bus)
-    : mScene{scene}, mMsgBus{bus},
-      mSubscription(bus.subscribeToChannel<ColMeshEvent>([this](const auto& e) { handleEvent(e); }))
+CollisionCubeManager::CollisionCubeManager(aw::Scene& scene, aw::MessageBus& bus) :
+    mScene{scene},
+    mMsgBus{bus},
+    mSubscription(bus.subscribeToChannel<ColMeshEvent>([this](const auto& e) { handleEvent(e); })),
+    mSubProperties(
+        bus.subscribeToChannel<PropertyChangedEventBase>([this](const auto& e) { handlePropertyChangeEvent(e); }))
 {
 }
 
@@ -65,4 +68,8 @@ void CollisionCubeManager::handleEvent(const ColMeshEvent& event)
       mMsgBus.broadcast<ColMeshEvent>(newEvent);
     }
   }
+}
+void CollisionCubeManager::handlePropertyChangeEvent(const PropertyChangedEventBase& event)
+{
+  LogTemp() << "Got props event: " << event.panel << ", " << event.group << ", " << event.property;
 }
