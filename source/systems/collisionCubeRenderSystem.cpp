@@ -5,14 +5,16 @@
 #include <aw/graphics/core/camera.hpp>
 #include <aw/graphics/core/geometry.hpp>
 #include <aw/opengl/opengl.hpp>
+#include <aw/runtime/components/transform.hpp>
 #include <aw/runtime/entitySystem/entitySystem.hpp>
 #include <aw/runtime/entitySystem/unpackComponents.hpp>
 #include <aw/utils/file/path.hpp>
 
-CollisionCubeRenderSystem::CollisionCubeRenderSystem(aw::ecs::EntitySystem& entitySystem)
-    : mEntitySystem(entitySystem), mSurfaceRenderer(PrimitiveRenderer::PrimitiveType::Triangles),
-      mOutlinesRenderer(PrimitiveRenderer::PrimitiveType::Lines),
-      mPointRenderer(PrimitiveRenderer::PrimitiveType::Points)
+CollisionCubeRenderSystem::CollisionCubeRenderSystem(aw::ecs::EntitySystem& entitySystem) :
+    mEntitySystem(entitySystem),
+    mSurfaceRenderer(PrimitiveRenderer::PrimitiveType::Triangles),
+    mOutlinesRenderer(PrimitiveRenderer::PrimitiveType::Lines),
+    mPointRenderer(PrimitiveRenderer::PrimitiveType::Points)
 {
   mSurfaceShader.link(
       *aw::ShaderStage::loadFromPath(aw::ShaderStage::Vertex, aw::createAssetPath("shaders/primitive.vert")),
@@ -24,7 +26,7 @@ void CollisionCubeRenderSystem::update(float dt)
   size_t count = mEntitySystem.getComponentCount<CollisionCube>();
 
   // Get space in renderer
-  // mSurfaceRenderer.clear();
+  mSurfaceRenderer.clear();
   mOutlinesRenderer.clear();
   mPointRenderer.clear();
 
@@ -32,10 +34,14 @@ void CollisionCubeRenderSystem::update(float dt)
   auto outlinesBegin = mOutlinesRenderer.allocate(count * 24);
   auto pointsBegin = mPointRenderer.allocate(count * 8);
 
-  for (auto [id, cCube] : mEntitySystem.getView<CollisionCube>())
+  using Transform = aw::ecs::components::Transform;
+  for (auto [id, cCube, transform] : mEntitySystem.getView<CollisionCube, Transform>())
   {
     assert(cCube);
-    auto cube = cCube->aabb;
+    LogTemp() << "Normal cube: " << cCube->aabb;
+    auto cube = aw::AABB::createFromTransform(cCube->aabb, transform->getTransform());
+    LogTemp() << "Transform: " << *transform;
+    LogTemp() << "Transformed cube: " << cube;
 
     aw::geo::cube(cube, surfaceBegin);
     surfaceBegin += 36;

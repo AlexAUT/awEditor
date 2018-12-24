@@ -14,21 +14,21 @@ enum class PropertyType
 
 struct PropertyChangedEventBase
 {
+  PropertyType type;
   std::string_view panel;
   std::string_view group;
   std::string_view property;
-  PropertyType type;
 };
 
-template <typename Type, PropertyType type>
+template <typename Type, PropertyType eventType>
 struct PropertyChangedEvent : public PropertyChangedEventBase
 {
-  Type newValue;
   PropertyChangedEvent(std::string_view panel, std::string_view group, std::string_view property, Type newValue) :
-      PropertyChangedEventBase{panel, group, property, type},
+      PropertyChangedEventBase{eventType, panel, group, property},
       newValue(newValue)
   {
   }
+  Type newValue;
 };
 
 using IntPropertyChangedEvent = PropertyChangedEvent<int, PropertyType::Int>;

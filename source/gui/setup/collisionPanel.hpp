@@ -3,6 +3,7 @@
 #include "../../events/collisionMeshEvent.hpp"
 #include "../guiEvent.hpp"
 #include "../modules/propertiesPanel.hpp"
+#include "../modules/vec3Property.hpp"
 
 #include <aw/gui/gui.hpp>
 #include <aw/gui/widgets/widgets.hpp>
@@ -50,16 +51,11 @@ void setupCollisionPanel(aw::MessageBus& messageBus, aw::gui::LinearContainer::S
   static PropertiesPanel cubePanel(gui, messageBus, "CollisionTab");
   cubePanel.addGroup("Transform");
 
-  cubePanel.addProperty("Z-Order", 1);
-  cubePanel.addProperty("Position", aw::Vec3{0.f});
-  cubePanel.addProperty("Scale", aw::Vec3{0.f});
-  cubePanel.addProperty("Rotation", aw::Vec3{0.f});
+  cubePanel.addProperty<Vec3Property>("Position", aw::Vec3{0.f});
+  cubePanel.addProperty<Vec3Property>("Scale", aw::Vec3{1.f});
+  cubePanel.addProperty<Vec3Property>("Rotation", aw::Vec3{0.f});
 
   layout->addChild(cubePanel.getRootPanel());
-
-  priv::addVector3(layout, "Position");
-  priv::addVector3(layout, "Scale");
-  priv::addVector3(layout, "Rotation");
 
   auto addBtn = std::make_shared<aw::gui::Button>(gui, "Add rect");
   addBtn->onClick = [&](auto) { messageBus.broadcast<ColMeshEvent>(NewColMeshEvent()); };

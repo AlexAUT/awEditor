@@ -9,7 +9,7 @@
 
 using namespace aw::gui;
 
-PropertiesPanel::PropertiesPanel(const GUI& gui, const aw::MessageBus& bus, std::string name) :
+PropertiesPanel::PropertiesPanel(const GUI& gui, aw::MessageBus& bus, std::string name) :
     mGui(gui),
     mMsgBus(bus),
     mPanelName(std::move(name)),
@@ -62,43 +62,15 @@ void PropertiesPanel::addProperty(std::string name, float value)
   container->addChild(label, 0.3);
 
   auto textBox = std::make_shared<TextBoxFloat>(mGui, value);
+  textBox->onTextChange = [this, name](auto& widget) {
+    auto& box = static_cast<TextBoxFloat&>(widget);
+    if (box.isTextValid())
+    {
+      mMsgBus.broadcast<PropertyChangedEventBase>(
+          FloatPropertyChangedEvent{mPanelName, mCurrentGroupName, name, box.getValue()});
+    }
+  };
   container->addChild(textBox, 0.7);
-
-  mCurrentSubContainer->addChild(container);
-}
-
-void PropertiesPanel::addProperty(std::string name, aw::Vec2 vec2)
-{
-  auto container = std::make_shared<LinearContainer>(mGui, Orientation::Horizontal);
-
-  auto label = std::make_shared<Label>(mGui, name);
-  container->addChild(label, 0.3);
-
-  auto textBox = std::make_shared<TextBoxFloat>(mGui, vec2.x);
-  container->addChild(textBox, 0.35);
-
-  textBox = std::make_shared<TextBoxFloat>(mGui, vec2.y);
-  container->addChild(textBox, 0.35);
-
-  mCurrentSubContainer->addChild(container);
-}
-
-void PropertiesPanel::addProperty(std::string name, aw::Vec3 vec3)
-{
-  auto container = std::make_shared<LinearContainer>(mGui, Orientation::Horizontal);
-
-  auto label = std::make_shared<Label>(mGui, name);
-  label->setPreferedSize({100.f, 0.f});
-  container->addChild(label, 0.f);
-
-  auto textBox = std::make_shared<TextBoxFloat>(mGui, vec3.x);
-  container->addChild(textBox);
-
-  textBox = std::make_shared<TextBoxFloat>(mGui, vec3.y);
-  container->addChild(textBox);
-
-  textBox = std::make_shared<TextBoxFloat>(mGui, vec3.z);
-  container->addChild(textBox);
 
   mCurrentSubContainer->addChild(container);
 }

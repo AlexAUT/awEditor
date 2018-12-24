@@ -5,8 +5,6 @@
 
 #include "editorState.hpp"
 
-#include <aw/utils/messageBus/messageBus.hpp>
-
 int main()
 {
   aw::LOG_INITIALIZE();

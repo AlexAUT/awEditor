@@ -48,6 +48,7 @@ private:
   aw::Channel<PropertyChangedEventBase>::SubscriptionType mSubProperties;
 
   int mVersion{0};
-
   int mCubeIdCounter{0};
+
+  size_t mSelectedCube{0};
 };
