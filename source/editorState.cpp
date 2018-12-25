@@ -26,7 +26,7 @@ EditorState::EditorState(aw::Engine& engine) :
     mGUI(engine.getWindow().getSize(), engine.getMessageBus()),
     mMeshHandler(engine.getMessageBus(), mScene),
     mCollisionCubeManager(mScene, engine.getMessageBus()),
-    mViewportManager(engine.getWindow(), mScene),
+    mViewportManager(engine, mScene),
     mCamera(aw::Camera::createPerspective(engine.getWindow().getAspectRatio(), 60.f * TO_RAD, 0.1f, 200.f)),
     mCamController(&mCamera),
     mMeshRendererSystem(mScene.getEntitySystem()),
@@ -55,7 +55,7 @@ void EditorState::update(float delta)
   mCamController.update(delta);
 
   mMeshRendererSystem.update(0);
-  mCollisionCubeRenderSystem.update(0);
+  mCollisionCubeRenderSystem.update(0, mCollisionCubeManager.getSelectedCube());
 }
 
 void EditorState::render()

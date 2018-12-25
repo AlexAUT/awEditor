@@ -42,3 +42,13 @@ Vec3Property::Vec3Property(PropertiesPanel& panel, std::string name, aw::Vec3 in
 
   panel.getCurrentSubContainer()->addChild(container);
 }
+
+void Vec3Property::setValue(aw::Vec3 value)
+{
+  if (mValue != value)
+  {
+    mValue = value;
+    for (int i = 0; i < 3; i++)
+      mInputFields[i]->setValue(value[i]);
+  }
+}

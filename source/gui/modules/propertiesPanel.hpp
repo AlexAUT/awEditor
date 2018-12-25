@@ -35,6 +35,12 @@ public:
   template <typename Property, typename... Args>
   void addProperty(std::string name, Args&&... args);
 
+  template <typename Property>
+  Property* getProperty(std::string_view name);
+
+  template <typename Property>
+  const Property* getProperty(std::string_view name) const;
+
 private:
 private:
   const aw::gui::GUI& mGui;
@@ -53,4 +59,21 @@ template <typename Property, typename... Args>
 void PropertiesPanel::addProperty(std::string name, Args&&... args)
 {
   mProperties.push_back(std::make_unique<Property>(*this, name, std::forward<Args...>(args...)));
+}
+
+template <typename Property>
+Property* PropertiesPanel::getProperty(std::string_view name)
+{
+  return const_cast<Property*>(static_cast<const PropertiesPanel*>(this)->getProperty<Property>(name));
+}
+
+template <typename Property>
+const Property* PropertiesPanel::getProperty(std::string_view name) const
+{
+  for (auto& prop : mProperties)
+  {
+    if (prop->getName() == name)
+      return static_cast<const Property*>(prop.get());
+  }
+  return nullptr;
 }

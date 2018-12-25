@@ -21,7 +21,7 @@ CollisionCubeRenderSystem::CollisionCubeRenderSystem(aw::ecs::EntitySystem& enti
       *aw::ShaderStage::loadFromPath(aw::ShaderStage::Fragment, aw::createAssetPath("shaders/color.vert")));
 }
 
-void CollisionCubeRenderSystem::update(float dt)
+void CollisionCubeRenderSystem::update(float dt, aw::ecs::Entity selectedEntity)
 {
   size_t count = mEntitySystem.getComponentCount<CollisionCube>();
 
@@ -30,7 +30,6 @@ void CollisionCubeRenderSystem::update(float dt)
   mOutlinesRenderer.clear();
   mPointRenderer.clear();
 
-  auto surfaceBegin = mSurfaceRenderer.allocate(count * 36);
   auto outlinesBegin = mOutlinesRenderer.allocate(count * 24);
   auto pointsBegin = mPointRenderer.allocate(count * 8);
 
@@ -41,8 +40,11 @@ void CollisionCubeRenderSystem::update(float dt)
     aw::Vec3 center = transform->getTransform() * aw::Vec4(cCube->center, 1.f);
     aw::Vec3 size = transform->getTransform() * aw::Vec4(cCube->size, 0.f);
 
-    aw::geo::cube(center, size, surfaceBegin);
-    surfaceBegin += 36;
+    if (selectedEntity.getId() == id)
+    {
+      auto surfaceBegin = mSurfaceRenderer.allocate(36);
+      aw::geo::cube(center, size, surfaceBegin);
+    }
 
     aw::geo::cubeLines(center, size, outlinesBegin);
     outlinesBegin += 24;

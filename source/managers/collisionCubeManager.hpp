@@ -29,6 +29,7 @@ public:
 
   size_t getCubeCount() const { return mCollisionCubes.size(); }
   aw::ecs::Entity getCubeById(std::string_view id) const;
+  aw::ecs::Entity getSelectedCube() const { return mSelectedCube; }
 
   CubeContainer::const_iterator begin() const { return mCollisionCubes.cbegin(); }
   CubeContainer::const_iterator end() const { return mCollisionCubes.cend(); };

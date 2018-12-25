@@ -72,6 +72,7 @@ aw::ecs::Entity CollisionCubeManager::getCubeById(std::string_view id) const
 
 void CollisionCubeManager::handleEvent(const ColMeshEvent& event)
 {
+  LogTemp() << "Got mesh event: " << (int)event.type;
   if (event.type == ColMeshEventType::New)
   {
     addCube();

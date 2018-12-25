@@ -1,6 +1,5 @@
 #include "gui.hpp"
 
-#include "setup/collisionPanel.hpp"
 #include "setup/menuBar.hpp"
 #include "setup/modals.hpp"
 
@@ -19,7 +18,7 @@ GUI::GUI(aw::Vec2 screenSize, aw::MessageBus& bus) : mGUI(screenSize), mMsgBus(b
 
   auto layoutSideBar = std::make_shared<LinearContainer>(mGUI, Orientation::Horizontal);
   container->addChild(layoutSideBar, 0);
-  setupCollisionPanel(mMsgBus, layoutSideBar);
+  setupCollisionPanel(layoutSideBar);
 
   setupModals(mMsgBus);
 }

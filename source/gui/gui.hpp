@@ -2,8 +2,11 @@
 
 #include <aw/gui/gui.hpp>
 #include <aw/utils/math/vector.hpp>
-
 #include <aw/utils/messageBus/messageBus.hpp>
+
+#include "modules/propertiesPanel.hpp"
+
+#include <memory>
 
 class GUI
 {
@@ -18,8 +21,12 @@ public:
   const aw::MessageBus& getMessageBus() const { return mMsgBus; }
 
 private:
+  void setupCollisionPanel(aw::gui::LinearContainer::SPtr container);
+
 private:
   aw::gui::GUI mGUI;
 
   aw::MessageBus& mMsgBus;
+
+  std::unique_ptr<PropertiesPanel> mCollisionPanel;
 };

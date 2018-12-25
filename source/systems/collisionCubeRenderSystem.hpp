@@ -1,6 +1,7 @@
 #pragma once
 
 #include <aw/graphics/core/shaderProgram.hpp>
+#include <aw/runtime/entitySystem/entity.hpp>
 #include <aw/runtime/renderers/primitiveRenderer.hpp>
 
 namespace aw
@@ -18,7 +19,7 @@ class CollisionCubeRenderSystem
 public:
   CollisionCubeRenderSystem(aw::ecs::EntitySystem& entitySystem);
 
-  void update(float dt);
+  void update(float dt, aw::ecs::Entity selectedEntity);
   void render(const aw::Camera& camera);
 
 private:
