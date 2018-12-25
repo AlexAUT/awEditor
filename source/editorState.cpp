@@ -20,12 +20,17 @@ using namespace aw::constantsF;
 
 aw::gui::Widget::SPtr window;
 
-EditorState::EditorState(aw::Engine& engine)
-    : aw::State(engine.getStateMachine()), mEngine(engine), mGUI(engine.getWindow().getSize(), engine.getMessageBus()),
-      mMeshHandler(engine.getMessageBus(), mScene), mCollisionCubeManager(mScene, engine.getMessageBus()),
-      mCamera(aw::Camera::createPerspective(engine.getWindow().getAspectRatio(), 60.f * TO_RAD, 0.1f, 200.f)),
-      mCamController(&mCamera), mMeshRendererSystem(mScene.getEntitySystem()),
-      mCollisionCubeRenderSystem(mScene.getEntitySystem())
+EditorState::EditorState(aw::Engine& engine) :
+    aw::State(engine.getStateMachine()),
+    mEngine(engine),
+    mGUI(engine.getWindow().getSize(), engine.getMessageBus()),
+    mMeshHandler(engine.getMessageBus(), mScene),
+    mCollisionCubeManager(mScene, engine.getMessageBus()),
+    mViewportManager(engine.getWindow(), mScene),
+    mCamera(aw::Camera::createPerspective(engine.getWindow().getAspectRatio(), 60.f * TO_RAD, 0.1f, 200.f)),
+    mCamController(&mCamera),
+    mMeshRendererSystem(mScene.getEntitySystem()),
+    mCollisionCubeRenderSystem(mScene.getEntitySystem())
 {
   mListenerId = mEngine.getWindow().registerEventListener([this](auto e) { this->processEvent(e); });
   mEngine.getWindow().setClearColor(aw::Colors::DIMSLATEGREY);
@@ -57,6 +62,7 @@ void EditorState::render()
 {
   mEngine.getWindow().clear();
 
+  GL_CHECK(glViewport(0, 0, mEngine.getWindow().getSize().x, mEngine.getWindow().getSize().y));
   mCamera.setAspectRatio(mEngine.getWindow().getAspectRatio());
 
   mMeshRendererSystem.render(mCamera);
@@ -77,6 +83,8 @@ void EditorState::processEvent(const aw::WindowEvent& event)
 
   if (!isCamControllerSelected)
     mCamController.processEvent(event);
+
+  mViewportManager.processEvent(event, mCamera);
 
   if (event.type == aw::WindowEvent::Closed)
     mEngine.terminate();

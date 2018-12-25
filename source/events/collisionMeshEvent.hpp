@@ -26,13 +26,9 @@ struct NewColMeshEvent : public ColMeshEvent
 
 struct CreatedColMeshEvent : public ColMeshEvent
 {
-  std::string_view id;
   aw::ecs::Entity entity;
 
-  CreatedColMeshEvent(std::string_view id, aw::ecs::Entity entity)
-      : ColMeshEvent{ColMeshEventType::Created}, id(id), entity(entity)
-  {
-  }
+  CreatedColMeshEvent(aw::ecs::Entity entity) : ColMeshEvent{ColMeshEventType::Created}, entity(entity) {}
 };
 
 struct SelectColMeshEvent : public ColMeshEvent

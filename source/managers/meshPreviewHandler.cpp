@@ -13,9 +13,10 @@
 
 #include <aw/runtime/loaders/assimpLoader.hpp>
 
-MeshPreviewHandler::MeshPreviewHandler(aw::MessageBus& bus, aw::Scene& scene)
-    : mSubscription(bus.subscribeToChannel<MeshEvent>([this](const MeshEvent& e) { this->processEvent(e); })),
-      mScene(scene), mEntity(mScene.getEntitySystem().createEntity())
+MeshPreviewHandler::MeshPreviewHandler(aw::MessageBus& bus, aw::Scene& scene) :
+    mSubscription(bus.subscribeToChannel<MeshEvent>([this](const MeshEvent& e) { this->processEvent(e); })),
+    mScene(scene),
+    mEntity(mScene.getEntitySystem().createEntity())
 {
   using namespace aw::ecs::components;
   mEntity.add<Transform>();
@@ -48,7 +49,6 @@ void MeshPreviewHandler::loadNewMesh(const NewMeshEvent& event)
   LogTemp() << assetPath;
   LogTemp() << "Load mesh: " << event.meshPath;
 
-  auto& meshManager = mScene.getMeshManager();
   aw::AssimpLoader loader;
   loader.setAssetPath(assetPath);
   aw::Path path(aw::Path::Type::Absolute, event.meshPath);

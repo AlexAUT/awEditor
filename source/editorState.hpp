@@ -15,6 +15,7 @@
 #include "managers/cameraManager.hpp"
 #include "managers/collisionCubeManager.hpp"
 #include "managers/meshPreviewHandler.hpp"
+#include "managers/viewportManager.hpp"
 #include "systems/collisionCubeRenderSystem.hpp"
 
 namespace aw
@@ -42,6 +43,7 @@ private:
   GUI mGUI;
   MeshPreviewHandler mMeshHandler;
   CollisionCubeManager mCollisionCubeManager;
+  ViewportManager mViewportManager;
 
   aw::ShaderProgram mMeshShader;
 

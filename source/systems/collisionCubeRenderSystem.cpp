@@ -38,18 +38,16 @@ void CollisionCubeRenderSystem::update(float dt)
   for (auto [id, cCube, transform] : mEntitySystem.getView<CollisionCube, Transform>())
   {
     assert(cCube);
-    LogTemp() << "Normal cube: " << cCube->aabb;
-    auto cube = aw::AABB::createFromTransform(cCube->aabb, transform->getTransform());
-    LogTemp() << "Transform: " << *transform;
-    LogTemp() << "Transformed cube: " << cube;
+    aw::Vec3 center = transform->getTransform() * aw::Vec4(cCube->center, 1.f);
+    aw::Vec3 size = transform->getTransform() * aw::Vec4(cCube->size, 0.f);
 
-    aw::geo::cube(cube, surfaceBegin);
+    aw::geo::cube(center, size, surfaceBegin);
     surfaceBegin += 36;
 
-    aw::geo::cubeLines(cube.getCenter(), cube.getSize(), outlinesBegin);
+    aw::geo::cubeLines(center, size, outlinesBegin);
     outlinesBegin += 24;
 
-    aw::geo::cubePoints(cube.getCenter(), cube.getSize(), pointsBegin);
+    aw::geo::cubePoints(center, size, pointsBegin);
     pointsBegin += 8;
   }
 }

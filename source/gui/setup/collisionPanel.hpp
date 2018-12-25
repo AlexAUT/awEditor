@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../../components/collisionCubeId.hpp"
 #include "../../events/collisionMeshEvent.hpp"
 #include "../guiEvent.hpp"
 #include "../modules/propertiesPanel.hpp"
@@ -53,7 +54,7 @@ void setupCollisionPanel(aw::MessageBus& messageBus, aw::gui::LinearContainer::S
 
   cubePanel.addProperty<Vec3Property>("Position", aw::Vec3{0.f});
   cubePanel.addProperty<Vec3Property>("Scale", aw::Vec3{1.f});
-  cubePanel.addProperty<Vec3Property>("Rotation", aw::Vec3{0.f});
+  // cubePanel.addProperty<Vec3Property>("Rotation", aw::Vec3{0.f});
 
   layout->addChild(cubePanel.getRootPanel());
 
@@ -72,8 +73,10 @@ void setupCollisionPanel(aw::MessageBus& messageBus, aw::gui::LinearContainer::S
     if (event.type == ColMeshEventType::Created)
     {
       auto& e = static_cast<const CreatedColMeshEvent&>(event);
-      std::string id = std::string("Cube").append(e.id);
-      cubeList->addItem(std::string("Cube").append(e.id), std::string(e.id));
+      auto id = e.entity.get<CollisionCubeId>()->id;
+      auto displayName = "Cube" + id;
+
+      cubeList->addItem(std::move(displayName), std::move(id));
       cubeList->getLastItem()->select();
     }
     else if (event.type == ColMeshEventType::Selected)

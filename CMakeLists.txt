@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.6)
 
 project(awEditor VERSION 0.0.1 DESCRIPTION "Small editor for the awRevolt engine")
 
+include(dependencies/awRevolt/cmake/enableWarnings.cmake)
+
 set(CMAKE_CXX_STANDARD 17)
 
 set(SOURCE_FILES)
