@@ -93,5 +93,10 @@ void GUI::setupCollisionPanel(aw::gui::LinearContainer::SPtr container)
           auto& e = static_cast<const SelectedColMeshEvent&>(event);
           priv::updateTransformTab(cubeList, cubePanel, e.entity);
         }
+        else if (event.type == ColMeshEventType::MovedSelected)
+        {
+          auto& e = static_cast<const MovedSelectedColMesh&>(event);
+          cubePanel->getProperty<Vec3Property>("Position")->setValue(e.newPosition);
+        }
       });
 }

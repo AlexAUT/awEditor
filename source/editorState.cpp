@@ -65,6 +65,16 @@ void EditorState::render()
   GL_CHECK(glViewport(0, 0, mEngine.getWindow().getSize().x, mEngine.getWindow().getSize().y));
   mCamera.setAspectRatio(mEngine.getWindow().getAspectRatio());
 
+  auto diff = mCamera.getPosition() - aw::Vec3{0.f}; // camPos - lookAt
+  auto distance = glm::dot(mCamera.getViewDirection(), diff);
+
+  auto cache = mCamera.getProjectionType();
+  mCamera.setProjectionType(aw::Camera::ProjectionType::Perspective);
+  auto p1 = mCamera.getPointInDistance({0.f, 0.f}, distance);
+  auto p2 = mCamera.getPointInDistance({1.f, 0.f}, distance);
+  mCamera.setProjectionType(cache);
+  mCamera.setOrthoWidth(glm::distance(p2, p1));
+
   mMeshRendererSystem.render(mCamera);
   mCollisionCubeRenderSystem.render(mCamera);
 

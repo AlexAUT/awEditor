@@ -1,6 +1,7 @@
 #pragma once
 
 #include <aw/runtime/entitySystem/entity.hpp>
+#include <aw/utils/math/vector.hpp>
 
 #include <string>
 
@@ -10,6 +11,8 @@ enum class ColMeshEventType
   Created,
   Select,
   Selected,
+  MovedSelected,
+  ScaledSelected,
 };
 
 struct ColMeshEvent
@@ -43,4 +46,18 @@ struct SelectedColMeshEvent : public ColMeshEvent
   aw::ecs::Entity entity;
 
   SelectedColMeshEvent(aw::ecs::Entity entity) : ColMeshEvent{ColMeshEventType::Selected}, entity(entity) {}
+};
+
+struct MovedSelectedColMesh : public ColMeshEvent
+{
+  aw::Vec3 newPosition;
+
+  MovedSelectedColMesh(aw::Vec3 pos) : ColMeshEvent{ColMeshEventType::MovedSelected}, newPosition{pos} {}
+};
+
+struct ScaledSelectedColMesh : public ColMeshEvent
+{
+  aw::Vec3 newScale;
+
+  ScaledSelectedColMesh(aw::Vec3 scale) : ColMeshEvent{ColMeshEventType::ScaledSelected}, newScale{scale} {}
 };

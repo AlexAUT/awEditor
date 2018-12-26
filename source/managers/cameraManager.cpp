@@ -1,6 +1,7 @@
 #include "cameraManager.hpp"
 
 #include <aw/engine/windowEvent.hpp>
+#include <aw/graphics/core/camera.hpp>
 #include <aw/utils/log.hpp>
 #include <aw/utils/math/constants.hpp>
 
@@ -77,6 +78,19 @@ void CameraManager::processEvent(const aw::WindowEvent& event)
     {
       setHorizontalRotation(event.key.control ? PI_2 : -PI_2);
       setVerticalRotation(0.f);
+    }
+    else if (event.key.code == sf::Keyboard::Numpad5)
+    {
+      auto* cam = getCamera();
+      using ProjType = aw::Camera::ProjectionType;
+      if (cam->getProjectionType() == ProjType::Perspective)
+      {
+        cam->setProjectionType(ProjType::Orthographic);
+      }
+      else if (cam->getProjectionType() == ProjType::Orthographic)
+      {
+        cam->setProjectionType(ProjType::Perspective);
+      }
     }
   }
 }
