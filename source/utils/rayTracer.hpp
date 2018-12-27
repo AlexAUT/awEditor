@@ -12,11 +12,11 @@ class Scene;
 class RayTracer
 {
 public:
-  RayTracer(const aw::Scene& scene);
+  RayTracer(aw::Scene& scene);
 
   aw::ecs::Entity trace(aw::Ray ray);
 
 private:
 private:
-  const aw::Scene& mScene;
+  aw::Scene& mScene;
 };

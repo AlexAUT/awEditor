@@ -13,7 +13,7 @@
 #include "../components/collisionCubeId.hpp"
 #include "../events/collisionMeshEvent.hpp"
 
-ViewportManager::ViewportManager(aw::Engine& engine, const aw::Scene& scene) : mEngine(engine), mRayTracer(scene)
+ViewportManager::ViewportManager(aw::Engine& engine, aw::Scene& scene) : mEngine(engine), mRayTracer(scene)
 {
   engine.getMessageBus().subscribeToChannelUnsafe<ColMeshEvent>([this](const auto& e) { handleEvent(e); });
 }

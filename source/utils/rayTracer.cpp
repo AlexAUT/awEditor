@@ -8,7 +8,7 @@
 
 #include <aw/utils/log.hpp>
 
-RayTracer::RayTracer(const aw::Scene& scene) : mScene(scene) {}
+RayTracer::RayTracer(aw::Scene& scene) : mScene(scene) {}
 
 aw::ecs::Entity RayTracer::trace(aw::Ray ray)
 {

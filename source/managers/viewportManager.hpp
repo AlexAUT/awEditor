@@ -20,7 +20,7 @@ class ColMeshEvent;
 class ViewportManager
 {
 public:
-  ViewportManager(aw::Engine& engine, const aw::Scene& scene);
+  ViewportManager(aw::Engine& engine, aw::Scene& scene);
   bool processEvent(const aw::WindowEvent& event, const aw::Camera& camera);
 
   bool isConsumingEvents() const { return mDragging; }

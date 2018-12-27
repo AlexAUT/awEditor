@@ -6,8 +6,10 @@
 #include <aw/graphics/core/geometry.hpp>
 #include <aw/opengl/opengl.hpp>
 #include <aw/runtime/components/transform.hpp>
+#include <aw/runtime/entitySystem/componentIterator.hpp>
+#include <aw/runtime/entitySystem/componentView.hpp>
 #include <aw/runtime/entitySystem/entitySystem.hpp>
-#include <aw/runtime/entitySystem/unpackComponents.hpp>
+#include <aw/runtime/entitySystem/multiComponentView.hpp>
 #include <aw/utils/file/path.hpp>
 
 CollisionCubeRenderSystem::CollisionCubeRenderSystem(aw::ecs::EntitySystem& entitySystem) :
@@ -34,8 +36,10 @@ void CollisionCubeRenderSystem::update(float dt, aw::ecs::Entity selectedEntity)
   auto pointsBegin = mPointRenderer.allocate(count * 8);
 
   using Transform = aw::ecs::components::Transform;
+  int t1 = 0;
   for (auto [id, cCube, transform] : mEntitySystem.getView<CollisionCube, Transform>())
   {
+    t1++;
     assert(cCube);
     aw::Vec3 center = transform->getTransform() * aw::Vec4(cCube->center, 1.f);
     aw::Vec3 size = transform->getTransform() * aw::Vec4(cCube->size, 0.f);

@@ -5,7 +5,6 @@
 
 #include <aw/runtime/components/transform.hpp>
 #include <aw/runtime/entitySystem/entitySystem.hpp>
-#include <aw/runtime/entitySystem/unpackComponents.hpp>
 #include <aw/runtime/scene/scene.hpp>
 #include <aw/utils/log.hpp>
 #include <aw/utils/math/constants.hpp>
