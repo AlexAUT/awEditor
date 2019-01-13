@@ -10,6 +10,7 @@
 #include <aw/runtime/renderers/primitiveRenderer.hpp>
 #include <aw/runtime/scene/scene.hpp>
 #include <aw/runtime/systems/meshRendererSystem.hpp>
+#include <aw/runtime/systems/transformSystem.hpp>
 
 #include "gui/gui.hpp"
 #include "managers/cameraManager.hpp"
@@ -51,5 +52,6 @@ private:
   CameraManager mCamController;
 
   aw::ecs::systems::MeshRendererSystem mMeshRendererSystem;
+  aw::ecs::systems::TransformSystem mTransformSystem;
   CollisionCubeRenderSystem mCollisionCubeRenderSystem;
 };

@@ -51,6 +51,11 @@ bool ViewportManager::processEvent(const aw::WindowEvent& event, const aw::Camer
           mEngine.getMessageBus().broadcast<ColMeshEvent>(event);
           LogTemp() << "Rect clicked!";
         }
+        else
+        {
+          SelectColMeshEvent event{""};
+          mEngine.getMessageBus().broadcast<ColMeshEvent>(event);
+        }
       }
     }
   }

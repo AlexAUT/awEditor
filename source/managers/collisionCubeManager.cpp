@@ -28,7 +28,10 @@ void CollisionCubeManager::addCube()
   std::string id{std::to_string(++mCubeIdCounter)};
   auto& newCube = mCollisionCubes.emplace_back(mScene.getEntitySystem().createEntity());
   newCube.add<CollisionCube>(aw::Vec3{0.f}, aw::Vec3{1.f});
-  newCube.add<Transform>();
+  newCube.add<Transform>(newCube);
+  if (mSelectedCube.isValid())
+    newCube.get<Transform>()->setParent(mSelectedCube);
+
   newCube.add<CollisionCubeId>(std::move(id));
   mVersion++;
 
@@ -50,11 +53,8 @@ void CollisionCubeManager::selectCube(std::string_view id)
 {
   mSelectedCube = getCubeById(id);
 
-  if (mSelectedCube.isValid())
-  {
-    SelectedColMeshEvent newEvent{mSelectedCube};
-    mMsgBus.broadcast<ColMeshEvent>(newEvent);
-  }
+  SelectedColMeshEvent newEvent{mSelectedCube};
+  mMsgBus.broadcast<ColMeshEvent>(newEvent);
 }
 
 aw::ecs::Entity CollisionCubeManager::getCubeById(std::string_view id) const

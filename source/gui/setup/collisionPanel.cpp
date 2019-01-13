@@ -39,11 +39,21 @@ void addVector3(aw::gui::LinearContainer::SPtr& container, std::string title)
 
 void updateTransformTab(aw::gui::List::SPtr cubeList, PropertiesPanel* panel, aw::ecs::Entity entity)
 {
-  auto t = entity.get<aw::ecs::components::Transform>();
-  panel->getProperty<Vec3Property>("Position")->setValue(t->getPosition());
-  panel->getProperty<Vec3Property>("Scale")->setValue(t->getScale());
+  if (entity.isValid())
+  {
+    auto t = entity.get<aw::ecs::components::Transform>();
+    panel->getProperty<Vec3Property>("Position")->setValue(t->getPosition());
+    panel->getProperty<Vec3Property>("Scale")->setValue(t->getScale());
 
-  cubeList->selectItem(entity.get<CollisionCubeId>()->id);
+    cubeList->selectItem(entity.get<CollisionCubeId>()->id);
+  }
+  else
+  {
+    panel->getProperty<Vec3Property>("Position")->setValue(aw::Vec3{0.f});
+    panel->getProperty<Vec3Property>("Scale")->setValue(aw::Vec3{1.f});
+
+    cubeList->deselectSelectedChild();
+  }
 }
 
 } // namespace priv

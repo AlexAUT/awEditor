@@ -15,7 +15,7 @@ aw::ecs::Entity RayTracer::trace(aw::Ray ray)
   using namespace aw::ecs::components;
   for (auto [id, transform, cube] : mScene.getEntitySystem().getView<Transform, CollisionCube>())
   {
-    auto t = transform->getTransform();
+    auto t = transform->getGlobalTransform();
     auto pos = t * aw::Vec4(cube->center, 1.f);
     auto size = t * aw::Vec4(cube->size, 0.f);
     aw::AABB box(pos, size);

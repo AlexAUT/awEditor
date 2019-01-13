@@ -41,8 +41,8 @@ void CollisionCubeRenderSystem::update(float dt, aw::ecs::Entity selectedEntity)
   {
     t1++;
     assert(cCube);
-    aw::Vec3 center = transform->getTransform() * aw::Vec4(cCube->center, 1.f);
-    aw::Vec3 size = transform->getTransform() * aw::Vec4(cCube->size, 0.f);
+    aw::Vec3 center = transform->getGlobalTransform() * aw::Vec4(cCube->center, 1.f);
+    aw::Vec3 size = transform->getGlobalTransform() * aw::Vec4(cCube->size, 0.f);
 
     if (selectedEntity.getId() == id)
     {

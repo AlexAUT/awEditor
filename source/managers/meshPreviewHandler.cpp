@@ -1,17 +1,14 @@
 #include "meshPreviewHandler.hpp"
 
-#include <aw/runtime/scene/scene.hpp>
-
-#include <aw/utils/log.hpp>
-#include <fstream>
-
 #include <aw/runtime/components/meshProvider.hpp>
 #include <aw/runtime/components/meshRenderer.hpp>
 #include <aw/runtime/components/transform.hpp>
-
-#include <aw/runtime/components/transform.hpp>
-
 #include <aw/runtime/loaders/assimpLoader.hpp>
+#include <aw/runtime/resourceManager/factories/meshFactory.hpp>
+#include <aw/runtime/scene/scene.hpp>
+#include <aw/utils/log.hpp>
+
+#include <fstream>
 
 MeshPreviewHandler::MeshPreviewHandler(aw::MessageBus& bus, aw::Scene& scene) :
     mSubscription(bus.subscribeToChannel<MeshEvent>([this](const MeshEvent& e) { this->processEvent(e); })),
@@ -19,7 +16,7 @@ MeshPreviewHandler::MeshPreviewHandler(aw::MessageBus& bus, aw::Scene& scene) :
     mEntity(mScene.getEntitySystem().createEntity())
 {
   using namespace aw::ecs::components;
-  mEntity.add<Transform>();
+  mEntity.add<Transform>(mEntity);
   mEntity.add<MeshRenderer>();
 }
 
@@ -45,19 +42,17 @@ void MeshPreviewHandler::loadNewMesh(const NewMeshEvent& event)
     LogTemp() << "Mesh has to be placed inside a assets directory";
     return;
   }
+
   std::string assetPath = event.meshPath.substr(0, found + key.size() - 1);
-  LogTemp() << assetPath;
-  LogTemp() << "Load mesh: " << event.meshPath;
+  auto path = aw::createAbsolutePath(event.meshPath);
 
-  aw::AssimpLoader loader;
-  loader.setAssetPath(assetPath);
-  aw::Path path(aw::Path::Type::Absolute, event.meshPath);
-  loader.loadFromPath(path);
+  using namespace aw::factories;
+  auto& resManager = mScene.getResourceManager();
+  auto mesh = resManager.getRegistry<aw::Mesh>().create<MeshFactory>(path.getRelativePath(), path, resManager);
 
-  auto mesh = std::shared_ptr<aw::Mesh>(loader.loadMesh("previewMesh").release());
   if (!mesh)
   {
-    LogTemp() << "Failed to load mesh: " << path.getAbsolutePath() << "!";
+    LogTemp() << "Failed to load mesh: " << path << "!";
   }
   else
   {
@@ -68,6 +63,8 @@ void MeshPreviewHandler::loadNewMesh(const NewMeshEvent& event)
     else
       mEntity.get<MeshProvider>()->mMesh = mesh;
 
-    *mEntity.get<Transform>() = {};
+    mEntity.get<Transform>()->setPosition(aw::Vec3{0.f});
+    mEntity.get<Transform>()->setRotation(aw::Vec3{0.f});
+    mEntity.get<Transform>()->setScale(aw::Vec3{1.f});
   }
 }

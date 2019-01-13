@@ -11,7 +11,7 @@
 #include <aw/utils/file/path.hpp>
 #include <aw/utils/log.hpp>
 
-DEFINE_LOG_CATEGORY(EditorD, aw::log::Debug, "Editor")
+DEFINE_LOG_CATEGORIES(Editor, "Editor state")
 
 #include <aw/utils/math/constants.hpp>
 using namespace aw::constantsF;
@@ -30,6 +30,7 @@ EditorState::EditorState(aw::Engine& engine) :
     mCamera(aw::Camera::createPerspective(engine.getWindow().getAspectRatio(), 60.f * TO_RAD, 0.1f, 200.f)),
     mCamController(&mCamera),
     mMeshRendererSystem(mScene.getEntitySystem()),
+    mTransformSystem(mScene.getEntitySystem()),
     mCollisionCubeRenderSystem(mScene.getEntitySystem())
 {
   mListenerId = mEngine.getWindow().registerEventListener([this](auto e) { this->processEvent(e); });
@@ -54,8 +55,9 @@ void EditorState::update(float delta)
 
   mCamController.update(delta);
 
-  mMeshRendererSystem.update(0);
-  mCollisionCubeRenderSystem.update(0, mCollisionCubeManager.getSelectedCube());
+  mTransformSystem.update(delta);
+  mMeshRendererSystem.update(delta);
+  mCollisionCubeRenderSystem.update(delta, mCollisionCubeManager.getSelectedCube());
 }
 
 void EditorState::render()
